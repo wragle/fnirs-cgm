@@ -127,8 +127,13 @@ def preprocess(raws, h_freq, l_freq, channels_to_remove=[]):
         optical_density = mne.preprocessing.nirs.optical_density(raw)
 
         # filter out certain frequency range
-        filtered_optical_density = optical_density.filter(l_freq=l_freq, h_freq=h_freq, h_trans_bandwidth=0.1, verbose=50)
-
+        #filtered_optical_density = optical_density.filter(l_freq=l_freq, h_freq=h_freq, h_trans_bandwidth=0.1, verbose=50)
+        if sscreg:
+            od_ssdcorrected = mne_nirs.signal_enhancement.short_channel_regression(optical_density)
+            filtered_optical_density = od_ssdcorrected.filter(l_freq=l_freq, h_freq=h_freq, h_trans_bandwidth=0.1, verbose=50)
+        else:
+            filtered_optical_density = optical_density.filter(l_freq=l_freq, h_freq=h_freq, h_trans_bandwidth=0.1, verbose=50)
+        
         # optical density -> haemodynamic response
         haemo = mne.preprocessing.nirs.beer_lambert_law(filtered_optical_density, ppf=0.1)
 
