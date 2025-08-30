@@ -9,6 +9,7 @@ def main():
     alpha_value = 0.05
     low_freq, high_freq = 0.01, 0.08
     start_trim, end_trim = 0, 1
+    sscreg = False
     selected_files = []
     channels_to_remove = []
     raw = analysis.load_subject_raw(snirf_files[0])
@@ -173,6 +174,12 @@ def main():
                     start_trim = int(trims[0])
                     end_trim = int(trims[1])
                     print('Trim values set')
+            elif inp[1] == 'sscreg':
+                if inp[2] == '1':
+                    sscreg = True
+                else:
+                    sscreg = False
+                print('Sscreg value set')
 
         # CAUSAL DISCOVERY COMMAND
         elif command == 'pc':
@@ -183,7 +190,7 @@ def main():
             if len(filenames) < 1:
                 print('No files selected')
                 continue
-            analysis.causal_discovery(filenames, alpha_value, low_freq, high_freq, channels_to_remove, start_trim, end_trim)
+            analysis.causal_discovery(filenames, alpha_value, low_freq, high_freq, channels_to_remove, start_trim, end_trim, sscreg)
             delta_time = time.time() - start_time
             #print(f'{delta_time} seconds for {len(filenames)} subjects.')
 

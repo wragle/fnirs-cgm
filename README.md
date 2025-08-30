@@ -13,6 +13,7 @@ A few libraries are required to run the program. These requirements are listed b
 
 The following Python packages are runtime requirements:
 * mne           (1.9.0)
+* mne-nirs      (0.7.1)
 * h5py          (3.13.0)
 * pydot         (3.0.4)
 * matplotlib    (3.10.1)
@@ -116,7 +117,7 @@ Channels have been reset
 ```
 
 ### Modifying Parameters
-The **set** command takes two arguments: the first is the parameter which is to be set, the second is the new value for that parameter. The parameters which can be set are the alpha value for the conditional independence test (*alpha*), the bandpass filter frequencies (*bandpass*), and the trim value (*trim*) which determines how much of the time series should be removed from the start and end. *alpha* must be between 0 and 1, *bandpass* must be in the format `low-high`, and *trim* must be in the format `start_trim-end_trim`.
+The **set** command takes two arguments: the first is the parameter which is to be set, the second is the new value for that parameter. The parameters which can be set are the alpha value for the conditional independence test (*alpha*), the bandpass filter frequencies (*bandpass*), and the trim value (*trim*) which determines how much of the time series should be removed from the start and end. *alpha* must be between 0 and 1, *bandpass* must be in the format `low-high`, and *trim* must be in the format `start_trim-end_trim`. *sscreg* takes a binary parameter 0 or 1, 0 by default.
 
 ```
 >>> set alpha 0.03
@@ -124,6 +125,8 @@ The **set** command takes two arguments: the first is the parameter which is to 
 >>> set bandpass 0.02-0.1
 
 >>> set trim 2500-2000
+
+>>> set sccreg 1
 ```
 
 ### Running PC Algorithm

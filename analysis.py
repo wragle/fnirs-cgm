@@ -4,6 +4,7 @@ import math
 from pathlib import Path
 import numpy as np
 import mne
+import mne_nirs
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import seaborn as sns
@@ -117,7 +118,7 @@ def load_all_subjects_raw(path):
     # returns an array containing the raw data from each subject
     return raws
 
-def preprocess(raws, h_freq, l_freq, channels_to_remove=[]):
+def preprocess(raws, h_freq, l_freq, sscreg, channels_to_remove=[]):
     haemos = []
     for raw in raws:
         # drops erroneous channels
@@ -127,7 +128,6 @@ def preprocess(raws, h_freq, l_freq, channels_to_remove=[]):
         optical_density = mne.preprocessing.nirs.optical_density(raw)
 
         # filter out certain frequency range
-        #filtered_optical_density = optical_density.filter(l_freq=l_freq, h_freq=h_freq, h_trans_bandwidth=0.1, verbose=50)
         if sscreg:
             od_ssdcorrected = mne_nirs.signal_enhancement.short_channel_regression(optical_density)
             filtered_optical_density = od_ssdcorrected.filter(l_freq=l_freq, h_freq=h_freq, h_trans_bandwidth=0.1, verbose=50)
@@ -267,7 +267,7 @@ def format_ch_names(inp_chs):
         out_chs.append(ch + ' 690')
     return out_chs
 
-def causal_discovery(filenames, alpha, low_freq, high_freq, channels_to_remove, start_trim, end_trim):
+def causal_discovery(filenames, alpha, low_freq, high_freq, channels_to_remove, start_trim, end_trim, sscreg):
 
     channels_to_remove = format_ch_names(channels_to_remove)
 
@@ -277,7 +277,7 @@ def causal_discovery(filenames, alpha, low_freq, high_freq, channels_to_remove, 
         raws.append(load_subject_raw(file))
 
     # converts to haemodynamic data
-    haemos = preprocess(raws, high_freq, low_freq, channels_to_remove)
+    haemos = preprocess(raws, high_freq, low_freq, sscreg, channels_to_remove)
 
     # gets hbo channels
     hbo_channels = [get_hbo_channels(haemo) for haemo in haemos]
